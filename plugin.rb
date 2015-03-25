@@ -165,7 +165,7 @@ after_initialize do
     def search
       term = params[:q]
       if term.present?
-        con = Faraday.new(url: 'http://localhost:3000') do |c|
+        con = Faraday.new(url: 'http://core.alcinema.com') do |c|
           c.request  :url_encoded
           c.response :logger
           c.adapter Faraday.default_adapter
