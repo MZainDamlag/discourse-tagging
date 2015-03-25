@@ -1,5 +1,5 @@
 function formatTag(t) {
-  const ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.id) + "</a>";
+  const ret = "<a href class='discourse-tag'>" + Handlebars.Utils.escapeExpression(t.text) + "</a>";
   return (t.count) ? ret + " <span class='discourse-tag-count'>x" + t.count + "</span>" : ret;
 }
 

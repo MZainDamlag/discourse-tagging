@@ -12,6 +12,31 @@ after_initialize do
   TAGS_FIELD_NAME = "tags"
   TAGS_FILTER_REGEXP = /[<\\\/\>\.\#\?\&\s]/
 
+  module ::Smash
+    class Core
+      include HTTParty
+     # debug_output
+      base_uri "http://localhost:3000/i"
+      default_params locale: 'ar',  country: 'eg', user_id: 0
+      def initialize(section, id=nil)
+        @extra = "/#{section}";
+        unless id.nil?
+            @extra = "#{@extra}/#{id}";
+        end
+      end
+      def get(keyword=nil, options={})
+        if keyword.nil?
+          self.class.get("#{@extra}", :query => options)
+        else
+          self.class.get("#{@extra}/#{keyword}", :query => options)
+        end
+      end
+      def post(action, options={})
+        self.class.post("#{@extra}/#{action}", :query => options)
+      end
+    end
+  end
+
   module ::DiscourseTagging
     class Engine < ::Rails::Engine
       engine_name "discourse_tagging"
@@ -163,15 +188,10 @@ after_initialize do
     end
 
     def search
-      tags = self.class.tags_by_count(guardian)
       term = params[:q]
       if term.present?
-        term.gsub!(/[^a-z0-9]*/, '')
-        tags = tags.where('value like ?', "%#{term}%")
+        tags = ::Smash::Core.new('search').get(nil, {request: "tags", q: "#{term}"})
       end
-
-      tags = tags.count(:value).map {|t, c| { id: t, text: t, count: c } }
-
       render json: { results: tags }
     end
 
