@@ -1,0 +1,24 @@
+{{#if tagNotification}}
+  {{tag-notifications-button tag=tag.id
+                             action="changeTagNotification"
+                             notificationLevel=tagNotification.notification_level}}
+{{/if}}
+
+{{#if canAdminTag}}
+  {{d-button action="deleteTag" label="tagging.delete_tag" icon="trash-o" class="admin-tag btn-danger"}}
+  {{d-button action="renameTag" actionParam=tag label="tagging.rename_tag" icon="pencil" class="admin-tag"}}
+{{/if}}
+
+<h2>
+  {{#link-to 'tags'}}{{i18n "tagging.tags"}}{{/link-to}}
+  {{fa-icon "angle-right"}}
+  {{discourse-tag tagId=tag.id}}
+</h2>
+
+{{bulk-select-button selected=selected refreshTarget=controller}}
+
+{{topic-list topics=list.topics
+             canBulkSelect=canBulkSelect
+             toggleBulkSelect="toggleBulkSelect"
+             bulkSelectEnabled=bulkSelectEnabled
+             selected=selected}}
